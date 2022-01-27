@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <title>전체 게시글 목록 조회 페이지</title>
+
+    <style>
+        .test {
+            color: brown;
+        }
+
+        .mainbox {
+            margin: 30px 30px 30px 30px
+        }
+    </style>
+</head>
+<!-- 1. 전체 게시글 조회 페이지
+    . 제목, 날짜, 작성자명을 조회
+    . 특정날짜 기준으로 내립차순
+    . 특정 게시글 클릭시 '게시글 조회 페이지'로 이동 -->
+
+<body>
+
+    <script>
+        // window.location.replace("/api/posts");
+        $(document).ready(function () {
+            showposts();
+        })
+
+        function showdetail(getNum){
+            // window.location.href="/detail.html"
+            let Num = getNum
+            console.log(getNum, Num)
+            $.ajax({
+                type: "GET",
+                url: "api/posts/detail/"+Num ,
+                data:{},
+                success: function(response){
+                    alert('showdetail() : getNum = ' , Num )
+                    window.location.href="/detail.html"
+
+                    let temp_html =`
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">제목</span>
+                        <input type="text" class="form-control" placeholder="제목" aria-label="Username"
+                            aria-describedby="basic-addon1">
+                    </div>
+                    작성자명
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">작성자</span>
+                        <input type="text" class="form-control" placeholder="작성자" aria-label="Username"
+                            aria-describedby="basic-addon1">
+                    </div>
+                    비밀번호
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">비밀번호</span>
+                        <input type="text" class="form-control" placeholder="비밀번호" aria-label="Username"
+                            aria-describedby="basic-addon1">
+                    </div>
+                    내용
+                    <div class="input-group">
+                        <span class="input-group-text">내용</span>
+                        <textarea class="form-control" aria-label="With textarea"></textarea>
+                    </div>
+                    글쓰기 버튼
+                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
+                    <label class="btn btn-secondary" for="option2">수정하기</label>
+                    `
+                    $('#box').append(temp_html);
+
+                }
+            })
+        }
+
+        //페이지 실행시 get으로 게시글 목록 받아와서 보여주기
+        function showposts() {
+            $('#list').empty();
+            console.log('empty clear ok');
+            $.ajax({
+                type: "GET",
+                url: "/api/posts",
+                data: {},
+                error: function(){
+                    console.log('error');
+                },
+                success: function (response) {
+                    console.log('main.html에서 함수 실행');
+                    // alert(response['msg'])
+                    console.log(response.posts);
+                    
+                    let posts = response.posts;
+                    
+                    for(let i=0; i<posts.length; i++){
+                        let content = posts[i].contents;
+                        let title = posts[i].title;
+                        let writer = posts[i].writer;
+                        let password = posts[i].password;
+                        let postNumber = posts[i].postNumber;
+                        let writeDay = posts[i].writeDay;
+
+                        let temp_html = `
+                        <a href="#" onclick="document.location.href='/detail.html?postNumber=${postNumber}'" class="list-group-item list-group-item-action">
+                            <div>번호:${postNumber}</div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">${title}</h5>
+                                <small class="text-muted">${writeDay}</small>
+                            </div>
+                            <p class="mb-1">${content}</p>
+                            <small class="text-muted">${writer}</small>
+                        </a>
+                        `;
+
+                        $('#list').append(temp_html);
+                    }
+                }
+            })
+        }
+
+    </script>
+    test!!
+
+    <div class="mainbox">
+        게시글
+        <div class="list-group" id="list" >
+
+            <!-- <a href="/api" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">제목 여기...</h5>
+                    <small class="text-muted">날짜정보 여기</small>
+                </div>
+                <p class="mb-1">작성글 보여주기</p>
+                <small class="text-muted">작성자명 보여주기</small>
+            </a> -->
+            
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='/upload.html'">글쓰기</button>
+
+
+    <div class="test">test</div>
+</body>
+
+</html>
