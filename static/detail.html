@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <title>게시글 작성 페이지</title>
+    <script>
+
+        $(document).ready(function () {
+            // $('#box').empty();
+            getpost();
+        })
+
+        function getpost() {
+            let url = new URL(window.location.href);
+            let urlParams = url.searchParams;
+            let postNumber = Number(urlParams.get("postNumber"));
+            // alert(postNumber);
+
+            $.ajax({
+                type: "GET",
+                url: "api/posts/detail/"+postNumber ,
+                data:{},
+                success: function(response){
+                    // alert( postNumber )
+                    
+                    let posts = response.num
+                    console.log(posts)
+                    let temp_html =`
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">제목</span>
+                        <div type="text" class="form-control" placeholder="${posts.title}" aria-label="Username"
+                            aria-describedby="basic-addon1" value="${posts.title}">${posts[0].title}</div>
+                    </div>
+                    작성자명
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">작성자</span>
+                        <div type="text" class="form-control" placeholder="작성자" aria-label="Username"
+                            aria-describedby="basic-addon1">${posts[0].writer}</div>
+                    </div>
+                    날짜
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">날짜</span>
+                        <div type="text" class="form-control" placeholder="비밀번호" aria-label="Username"
+                            aria-describedby="basic-addon1">${posts[0].writeDay}</div>
+                    </div>
+                    내용
+                    <div class="input-group">
+                        <span class="input-group-text">내용</span>
+                        <p class="form-control" aria-label="With textarea">${posts[0].contents}</p>
+                    </div>
+                    버튼
+                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
+                    <label class="btn btn-secondary" for="option2" onclick="window.location.href='/edit.html?postNumber=${postNumber}'">
+                        수정하기</label>
+                    `
+                    $('#box').append(temp_html);
+
+                }
+            })
+        };
+
+
+
+    </script>
+    <style>
+        .test {
+            color: brown;
+        }
+    </style>
+</head>
+<!-- 3.게시글 조회페이지
+        .제목, 작성자명, 작성 날짜, 작성 내용을 조회하기...검색기능 아님 -->
+
+<body>
+    게시글 조회(게시글 보여주기)
+    <div class="test">test</div>
+
+    <div id="box">
+        <!-- 제목
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">제목</span>
+            <input type="text" class="form-control" placeholder="제목" aria-label="Username"
+                aria-describedby="basic-addon1">
+        </div>
+        작성자명
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">작성자</span>
+            <input type="text" class="form-control" placeholder="작성자" aria-label="Username"
+                aria-describedby="basic-addon1">
+        </div>
+        비밀번호
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">비밀번호</span>
+            <input type="text" class="form-control" placeholder="비밀번호" aria-label="Username"
+                aria-describedby="basic-addon1">
+        </div>
+        내용
+        <div class="input-group">
+            <span class="input-group-text">내용</span>
+            <textarea class="form-control" aria-label="With textarea"></textarea>
+        </div>
+        글쓰기 버튼
+        <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
+        <label class="btn btn-secondary" for="option2">수정하기</label> -->
+
+
+    </div>
+
+</body>
+
+</html>
